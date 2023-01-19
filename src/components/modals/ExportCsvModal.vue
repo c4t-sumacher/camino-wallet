@@ -9,6 +9,18 @@
                     hide-details
                     v-model="showValidation"
                 ></v-checkbox>
+                <v-checkbox
+                    label="Delegation Rewards"
+                    dense
+                    hide-details
+                    v-model="showDelegation"
+                ></v-checkbox>
+                <v-checkbox
+                    label="Delegation Fees Received"
+                    dense
+                    hide-details
+                    v-model="showFees"
+                ></v-checkbox>
             </div>
             <p class="err" v-if="error">{{ error }}</p>
             <v-btn
@@ -55,8 +67,8 @@ import {
 })
 export default class ExportCsvModal extends Vue {
     showValidation = true
-    showDelegation = false
-    showFees = false
+    showDelegation = true
+    showFees = true
     error: Error | null = null
 
     open(): void {
@@ -66,7 +78,7 @@ export default class ExportCsvModal extends Vue {
     }
 
     get canSubmit() {
-        return this.showValidation
+        return this.showDelegation || this.showValidation || this.showFees
     }
 
     get transactions() {
@@ -128,20 +140,55 @@ export default class ExportCsvModal extends Vue {
             let inputOuts = ins.map((input) => input.output)
             let myInputs = getOwnedOutputs(inputOuts, myAddresses)
             let isInputOwner = myInputs.length > 0
-            rows.push({
-                txId: txId,
-                txType: 'add_validator',
-                stakeDate: startMoment,
-                stakeDuration: durationMoment,
-                stakeAmount: bnToBig(stakeAmount, 9),
-                rewardDate: rewardMoment,
-                rewardAmtAvax: rewardAmtBig,
-                rewardAmtUsd: rewardAmtUsd,
-                avaxPrice: avaxPrice,
-                nodeID: nodeID,
-                isRewardOwner: isRewardOwner,
-                isInputOwner: isInputOwner,
-            })
+
+            if (type === 'add_delegator') {
+                // Skip if user did not want delegation / fee rewards
+                if (!this.showDelegation && !this.showFees) continue
+
+                // If user does not want delegation fees received, continue
+                if (!isInputOwner && !this.showFees) continue
+                // If user does not want delegation rewards, continue
+                if (isInputOwner && !this.showDelegation) continue
+
+                let type: CsvRowStakingTxType = isInputOwner ? 'add_delegator' : 'fee_received'
+
+                //TODO: What if reward went to another wallet?
+                // if (rewardOuts.length === 0) {
+                // }
+
+                rows.push({
+                    txId: txId,
+                    txType: type,
+                    stakeDate: startMoment,
+                    stakeDuration: durationMoment,
+                    stakeAmount: bnToBig(stakeAmount, 9),
+                    rewardDate: rewardMoment,
+                    rewardAmtAvax: rewardAmtBig,
+                    rewardAmtUsd: rewardAmtUsd,
+                    avaxPrice: avaxPrice,
+                    nodeID: nodeID,
+                    isRewardOwner: isRewardOwner,
+                    isInputOwner: isInputOwner,
+                })
+            } else {
+                // Skip if user did not want validation rewards
+                if (!this.showValidation) continue
+
+                rows.push({
+                    txId: txId,
+                    txType: 'add_validator',
+                    stakeDate: startMoment,
+                    stakeDuration: durationMoment,
+                    stakeAmount: bnToBig(stakeAmount, 9),
+                    rewardDate: rewardMoment,
+                    rewardAmtAvax: rewardAmtBig,
+                    rewardAmtUsd: rewardAmtUsd,
+                    avaxPrice: avaxPrice,
+                    nodeID: nodeID,
+                    isRewardOwner: isRewardOwner,
+                    isInputOwner: isInputOwner,
+                })
+            }
         }
 
         const symbol = this.$store.getters['Assets/AssetAVA'].symbol

@@ -10,7 +10,6 @@
                 :max="max"
                 placeholder="0.00"
                 @change="amount_in"
-                :readonly="readonly"
             ></BigNumInput>
         </div>
         <p class="ticker">{{ nativeAssetSymbol }}</p>
@@ -32,7 +31,7 @@
 <script lang="ts">
 import 'reflect-metadata'
 import { Vue, Component, Prop, Model } from 'vue-property-decorator'
-import { bnToBig, Big } from '@c4tplatform/camino-wallet-sdk/dist'
+import { bnToBig, Big } from '@c4tplatform/camino-wallet-sdk'
 //@ts-ignore
 import { BigNumInput } from '@c4tplatform/vue_components'
 import { BN } from '@c4tplatform/caminojs'
@@ -53,7 +52,6 @@ export default class AvaxInput extends Vue {
 
     @Prop() balance?: Big | null
     @Prop() alias?: string
-    @Prop() readonly?: boolean
 
     maxOut(ev: MouseEvent) {
         ev.preventDefault()
@@ -96,7 +94,7 @@ export default class AvaxInput extends Vue {
     .amt_in {
         color: var(--primary-color);
         font-size: 15px;
-        font-family: monospace;
+        font-family: 'Inter';
         flex-grow: 1;
         flex-shrink: 1;
         display: block;
@@ -136,7 +134,7 @@ export default class AvaxInput extends Vue {
     }
 
     span {
-        font-family: monospace;
+        font-family: 'Inter';
         padding-left: 14px;
     }
 }

@@ -1,43 +1,62 @@
 import Vue from 'vue'
-import VueMeta from 'vue-meta'
-import App from './App.vue'
-import router from './router'
 import store from './store'
-//@ts-ignore
+import VueMeta from 'vue-meta'
+import router from './router'
+import App from './App.vue'
 import { Datetime } from 'vue-datetime'
 import 'vue-datetime/dist/vue-datetime.css'
-import vuetify from './plugins/vuetify'
 import i18n from './plugins/i18n'
+import BootstrapVue from 'bootstrap-vue'
+import vuetify from '@/plugins/vuetify'
 
 Vue.use(VueMeta)
 Vue.use(BootstrapVue)
 Vue.component('datetime', Datetime)
 
-Vue.config.productionTip = false
+export const mount = (el: string, appSuiteStore: any) => {
+    const { setUpdateStore, setLogOut } = appSuiteStore
+    const MyPlugin = {
+        install(Vue, options) {
+            Vue.prototype.globalHelper = () => {
+                return {
+                    updateSuiteStore: (s) => {
+                        setUpdateStore(s)
+                    },
+                    logout: () => {
+                        setLogOut(true)
+                    },
+                }
+            }
+        },
+    }
+    Vue.use(MyPlugin)
+    const app = new Vue({
+        router,
+        store,
+        vuetify,
+        i18n,
+        render: (createElement) => {
+            return createElement(App)
+        },
+        created: function () {
+            store.commit('Accounts/loadAccounts')
+        },
+        mounted() {
+            // Reveal app version
+            // Hide loader once vue is initialized
+            let loader = document.getElementById('app_loading')
+            if (loader) {
+                loader.style.display = 'none'
+            }
+        },
+        data: {
+            theme: 'night',
+        },
+    })
+    app.$mount(el)
+}
 
-const app = new Vue({
-    router,
-    store,
-    vuetify,
-    i18n,
-    render: (h) => h(App),
-    created: () => {
-        store.commit('Accounts/loadAccounts')
-        if (store.getters['Accounts/hasAccounts'] > 0) router.replace('/access')
-    },
-    mounted() {
-        // Reveal app version
-        console.log(`App Version: ${process.env.VUE_APP_VERSION}`)
-        // Hide loader once vue is initialized
-        let loader = document.getElementById('app_loading')
-        if (loader) {
-            loader.style.display = 'none'
-        }
-    },
-    data: {
-        theme: 'day',
-    },
-}).$mount('#app')
+// mount("#app");
 
 // @ts-ignore
 if (window.Cypress) {
@@ -48,7 +67,6 @@ if (window.Cypress) {
 
 // Extending Big.js with a helper function
 import Big from 'big.js'
-import BootstrapVue from 'bootstrap-vue'
 
 declare module 'big.js' {
     interface Big {

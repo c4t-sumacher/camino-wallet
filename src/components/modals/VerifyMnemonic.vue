@@ -1,6 +1,9 @@
 <template>
     <modal ref="modal" :title="title" class="modal_parent" icy>
-        <form class="mnemonic_body" v-on:submit.prevent="verify">
+        <div class="mnemonic_body">
+            <button @click="close" class="close_but">
+                <fa icon="times"></fa>
+            </button>
             <h3>{{ $t('create.verify_desc') }}</h3>
             <div class="words">
                 <div v-for="i in 24" :key="i" class="mnemonic_in" tabindex="-1">
@@ -14,7 +17,7 @@
             </div>
             <p class="err">{{ err }}</p>
             <button class="but_primary ava_button button_primary" @click="verify">Verify</button>
-        </form>
+        </div>
     </modal>
 </template>
 
@@ -77,7 +80,6 @@ export default class VerifyMnemonic extends Vue {
     }
 
     open() {
-        this.isActive = true
         // @ts-ignore
         this.$refs.modal.open()
     }
@@ -119,7 +121,7 @@ export default class VerifyMnemonic extends Vue {
 }
 </script>
 <style scoped lang="scss">
-@use "../../styles/main";
+@use '../../styles/main';
 
 .mnemonic_body {
     padding: 30px;
@@ -128,19 +130,19 @@ export default class VerifyMnemonic extends Vue {
     width: 450px;
 }
 
-// .close_but {
-//     position: absolute;
-//     top: 12px;
-//     right: 20px;
-//     background-color: transparent;
-//     border: none;
-//     outline: none;
-//     opacity: 0.2;
+.close_but {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    opacity: 0.2;
 
-//     &:hover {
-//         opacity: 1;
-//     }
-// }
+    &:hover {
+        opacity: 1;
+    }
+}
 
 .verify {
     position: fixed;
@@ -226,12 +228,8 @@ h3 {
 }
 
 @include main.mobile-device {
-    .mnemonic_body {
-        padding: 15px 30px;
+    .mnemonic-body {
         width: 100%;
-        overflow-y: scroll;
-        position: relative;
-        height: 60vh;
     }
 
     .words {

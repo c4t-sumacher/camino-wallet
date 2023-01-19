@@ -41,7 +41,7 @@ export default class JsonPayloadView extends Vue {
         try {
             let obj = JSON.parse(data)
 
-            if (obj.hasOwnProperty('avalanche')) {
+            if (Object.prototype.hasOwnProperty.call(obj, 'avalanche')) {
                 return true
             } else {
                 return false

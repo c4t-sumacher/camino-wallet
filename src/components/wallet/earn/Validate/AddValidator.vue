@@ -9,7 +9,7 @@
                             <input
                                 type="text"
                                 v-model="nodeId"
-                                style="width: 100%; border-radius: var(--border-radius-sm)"
+                                style="width: 100%"
                                 placeholder="NodeID-"
                             />
                         </div>
@@ -25,15 +25,23 @@
                             <p class="desc">
                                 {{ $t('earn.validate.amount.desc') }}
                             </p>
-                            <AvaxInput
-                                v-model="stakeAmt"
-                                :max="maxAmt"
-                                ref="avaxinput"
-                                :readonly="true"
-                                class="amt_in"
-                            ></AvaxInput>
+                            <AvaxInput v-model="stakeAmt" :max="maxAmt" class="amt_in"></AvaxInput>
                         </div>
-                        <!-- <div class="reward_in" style="margin: 30px 0" :type="rewardDestination">
+                        <div style="margin: 30px 0">
+                            <h4>{{ $t('earn.validate.fee.label') }}</h4>
+                            <p class="desc">
+                                {{ $t('earn.validate.fee.desc') }}
+                            </p>
+                            <input
+                                type="number"
+                                :min="minFee"
+                                max="100"
+                                step="0.01"
+                                v-model="delegationFee"
+                                @change="onFeeChange"
+                            />
+                        </div>
+                        <div class="reward_in" style="margin: 30px 0" :type="rewardDestination">
                             <h4>{{ $t('earn.validate.reward.label') }}</h4>
                             <p class="desc">
                                 {{ $t('earn.validate.reward.desc') }}
@@ -52,22 +60,22 @@
                                 >
                                     {{ $t('earn.delegate.form.reward.chip_2') }}
                                 </button>
-                            </div> -->
-                        <!--                            <v-chip-group mandatory @change="rewardSelect">-->
-                        <!--                                <v-chip small value="local">-->
-                        <!--                                    {{ $t('earn.validate.reward.chip_1') }}-->
-                        <!--                                </v-chip>-->
-                        <!--                                <v-chip small value="custom">-->
-                        <!--                                    {{ $t('earn.validate.reward.chip_2') }}-->
-                        <!--                                </v-chip>-->
-                        <!--                            </v-chip-group>-->
-                        <!-- <QrInput
+                            </div>
+                            <!--                            <v-chip-group mandatory @change="rewardSelect">-->
+                            <!--                                <v-chip small value="local">-->
+                            <!--                                    {{ $t('earn.validate.reward.chip_1') }}-->
+                            <!--                                </v-chip>-->
+                            <!--                                <v-chip small value="custom">-->
+                            <!--                                    {{ $t('earn.validate.reward.chip_2') }}-->
+                            <!--                                </v-chip>-->
+                            <!--                            </v-chip-group>-->
+                            <QrInput
                                 style="height: 40px; border-radius: 2px"
                                 v-model="rewardIn"
                                 placeholder="Reward Address"
                                 class="reward_addr_in"
                             ></QrInput>
-                        </div> -->
+                        </div>
                         <Expandable>
                             <template v-slot:triggerOn>
                                 <p>
@@ -93,15 +101,15 @@
                         :node-i-d="nodeId"
                         :end="formEnd"
                         :amount="formAmt"
+                        :delegation-fee="delegationFee"
                         :reward-address="rewardIn"
                         :reward-destination="rewardDestination"
                     ></ConfirmPage>
                 </transition-group>
                 <div>
                     <div class="summary" v-if="!isSuccess">
-                        <!-- Hidden untill Camino is listed on an exchange -->
-                        <!-- <CurrencySelect v-model="currency_type"></CurrencySelect> -->
-                        <!-- <div>
+                        <CurrencySelect v-model="currency_type"></CurrencySelect>
+                        <div>
                             <label>
                                 {{ $t('earn.validate.summary.max_del') }}
                                 <Tooltip
@@ -115,12 +123,12 @@
                                 {{ maxDelegationText }} {{ nativeAssetSymbol }}
                             </p>
                             <p v-if="currency_type === 'USD'">${{ maxDelegationUsdText }} USD</p>
-                        </div> -->
+                        </div>
                         <div>
                             <label>{{ $t('earn.validate.summary.duration') }} *</label>
                             <p>{{ durationText }}</p>
                         </div>
-                        <!-- <div>
+                        <div>
                             <label>{{ $t('earn.validate.summary.rewards') }}</label>
                             <p v-if="currency_type === 'NATIVE'">
                                 {{ estimatedReward.toLocaleString(2) }} {{ nativeAssetSymbol }}
@@ -128,8 +136,11 @@
                             <p v-if="currency_type === 'USD'">
                                 ${{ estimatedRewardUSD.toLocaleString(2) }} USD
                             </p>
-                        </div> -->
+                        </div>
                         <div class="submit_box">
+                            <label style="margin: 8px 0 !important">
+                                * {{ $t('earn.validate.summary.warn') }}
+                            </label>
                             <p v-if="warnShortDuration" class="err">
                                 {{ $t('earn.validate.errs.duration_warn') }}
                             </p>
@@ -193,7 +204,7 @@
                             <label>{{ $t('earn.validate.success.reason') }}</label>
                             <p>{{ txReason }}</p>
                         </div>
-                        <!-- <v-btn
+                        <v-btn
                             @click="cancel"
                             block
                             class="button_secondary"
@@ -201,7 +212,7 @@
                             v-if="txStatus"
                         >
                             Back to Earn
-                        </v-btn> -->
+                        </v-btn>
                     </div>
                 </div>
             </form>
@@ -230,7 +241,6 @@ import UtxoSelectForm from '@/components/wallet/earn/UtxoSelectForm.vue'
 import Expandable from '@/components/misc/Expandable.vue'
 import { AmountOutput, UTXO } from '@c4tplatform/caminojs/dist/apis/platformvm'
 import { WalletType } from '@/js/wallets/types'
-import ts from 'typescript'
 
 const MIN_MS = 60000
 const HOUR_MS = MIN_MS * 60
@@ -256,7 +266,7 @@ const MAX_STAKE_DURATION = DAY_MS * 365
 export default class AddValidator extends Vue {
     startDate: string = new Date(Date.now() + MIN_MS * 15).toISOString()
     endDate: string = new Date().toISOString()
-    // delegationFee: string = '2.0'
+    delegationFee: string = '2.0'
     nodeId = ''
     rewardIn: string = ''
     rewardDestination = 'local' // local || custom
@@ -284,8 +294,15 @@ export default class AddValidator extends Vue {
 
     mounted() {
         this.rewardSelect('local')
-        //@ts-ignore
-        this.$refs.avaxinput.$refs.amt_in.val = '100000'
+    }
+
+    onFeeChange() {
+        let num = parseFloat(this.delegationFee)
+        if (num < this.minFee) {
+            this.delegationFee = this.minFee.toString()
+        } else if (num > 100) {
+            this.delegationFee = '100'
+        }
     }
 
     setEnd(val: string) {
@@ -359,34 +376,83 @@ export default class AddValidator extends Vue {
     }
 
     get maxAmt(): BN {
-        return ava.getNetwork().P.minStake
+        // let pAmt = this.platformUnlocked.add(this.platformLockedStakeable)
+        let pAmt = this.utxosBalance
+        // let fee = this.feeAmt;
+
+        // absolute max stake
+        let mult = new BN(10).pow(new BN(6 + 9))
+        let absMaxStake = new BN(3).mul(mult)
+
+        // If above stake limit
+        if (pAmt.gt(absMaxStake)) {
+            return absMaxStake
+        }
+
+        // let res = pAmt.sub(fee);
+        const ZERO = new BN('0')
+        if (pAmt.gt(ZERO)) {
+            return pAmt
+        } else {
+            return ZERO
+        }
     }
 
-    // get avaxPrice(): Big {
-    //     return Big(this.$store.state.prices.usd)
-    // }
+    get maxDelegationAmt(): BN {
+        let stakeAmt = this.stakeAmt
 
-    // get estimatedReward(): Big {
-    //     let start = new Date(this.startDate)
-    //     let end = new Date(this.endDate)
-    //     let duration = end.getTime() - start.getTime() // in ms
+        let maxRelative = stakeAmt.mul(new BN(5))
 
-    //     let currentSupply = this.$store.state.Platform.currentSupply
-    //     let estimation = calculateStakingReward(this.stakeAmt, duration / 1000, currentSupply)
-    //     let res = bnToBig(estimation, 9)
+        // absolute max stake
+        let mult = new BN(10).pow(new BN(6 + 9))
+        let absMaxStake = new BN(3).mul(mult)
 
-    //     return res
-    // }
+        let res
+        if (maxRelative.lt(absMaxStake)) {
+            res = maxRelative.sub(stakeAmt)
+        } else {
+            res = absMaxStake.sub(stakeAmt)
+        }
 
-    // get estimatedRewardUSD() {
-    //     return this.estimatedReward.times(this.avaxPrice)
-    // }
+        return BN.max(res, new BN(0))
+    }
+
+    get maxDelegationText() {
+        return bnToBig(this.maxDelegationAmt, 9).toLocaleString(9)
+    }
+
+    get maxDelegationUsdText() {
+        let big = bnToBig(this.maxDelegationAmt, 9)
+        let res = big.times(this.avaxPrice)
+        return res.toLocaleString(2)
+    }
+
+    get avaxPrice(): Big {
+        return Big(this.$store.state.prices.usd)
+    }
+
+    get estimatedReward(): Big {
+        let start = new Date(this.startDate)
+        let end = new Date(this.endDate)
+        let duration = end.getTime() - start.getTime() // in ms
+
+        let currentSupply = this.$store.state.Platform.currentSupply
+        let estimation = calculateStakingReward(this.stakeAmt, duration / 1000, currentSupply)
+        let res = bnToBig(estimation, 9)
+
+        return res
+    }
+
+    get estimatedRewardUSD() {
+        return this.estimatedReward.times(this.avaxPrice)
+    }
 
     updateFormData() {
         this.formNodeId = this.nodeId.trim()
         this.formAmt = this.stakeAmt
         this.formEnd = new Date(this.endDate)
         this.formRewardAddr = this.rewardIn
+        this.formFee = parseFloat(this.delegationFee)
     }
 
     confirm() {
@@ -446,6 +512,12 @@ export default class AddValidator extends Vue {
             return false
         }
 
+        // Delegation Fee
+        if (parseFloat(this.delegationFee) < this.minFee) {
+            this.err = this.$t('earn.validate.errs.fee', [this.minFee]) as string
+            return false
+        }
+
         // Stake amount
         if (this.stakeAmt.lt(this.minStakeAmt)) {
             let big = Big(this.minStakeAmt.toString()).div(Math.pow(10, 9))
@@ -469,6 +541,7 @@ export default class AddValidator extends Vue {
         if (endMs - startMs > MAX_STAKE_DURATION) {
             startDate = new Date(endMs - MAX_STAKE_DURATION)
         }
+
         try {
             this.isLoading = true
             this.err = ''
@@ -511,6 +584,7 @@ export default class AddValidator extends Vue {
 
     async updateTxStatus(txId: string) {
         let res = await ava.PChain().getTxStatus(txId)
+
         let status
         let reason = null
         if (typeof res === 'string') {
@@ -570,6 +644,11 @@ export default class AddValidator extends Vue {
 </script>
 <style scoped lang="scss">
 @use '../../../../styles/main';
+.cols {
+    /*display: grid;*/
+    /*grid-template-columns: 1fr 1fr;*/
+}
+
 form {
     display: grid;
     grid-template-columns: 1fr 340px;
@@ -577,7 +656,7 @@ form {
 }
 .ins_col {
     max-width: 490px;
-    // padding-bottom: 8vh;
+    padding-bottom: 8vh;
 }
 .amt {
     width: 100%;
@@ -638,7 +717,6 @@ label {
 .summary {
     border-left: 2px solid var(--bg-light);
     padding-left: 30px;
-    height: 100%;
     > div {
         margin-bottom: 14px;
         p {
