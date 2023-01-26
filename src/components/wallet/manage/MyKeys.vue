@@ -52,10 +52,6 @@ export default class MyKeys extends Vue {
         if (isConfirm) {
             await this.$store.dispatch('Accounts/deleteKey', wallet)
             await this.$store.dispatch('removeWallet', wallet)
-            this.$store.dispatch('Notifications/add', {
-                title: this.$t('keys.remove_success_title'),
-                message: this.$t('keys.remove_success_msg'),
-            })
         }
     }
 
@@ -80,7 +76,7 @@ export default class MyKeys extends Vue {
 }
 </script>
 <style scoped lang="scss">
-@use '../../../styles/main';
+@use "../../../styles/main";
 
 .default_key {
 }

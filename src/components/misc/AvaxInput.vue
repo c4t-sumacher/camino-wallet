@@ -10,6 +10,7 @@
                 :max="max"
                 placeholder="0.00"
                 @change="amount_in"
+                :readonly="readonly"
             ></BigNumInput>
         </div>
         <p class="ticker">{{ nativeAssetSymbol }}</p>
@@ -17,7 +18,7 @@
             <div>
                 <p>
                     <b>{{ $t('misc.balance') }}:</b>
-                    {{ balance.toLocaleString() }}
+                    {{ balanceBig }}
                 </p>
                 <p>
                     <b>$</b>
@@ -31,7 +32,7 @@
 <script lang="ts">
 import 'reflect-metadata'
 import { Vue, Component, Prop, Model } from 'vue-property-decorator'
-import { bnToBig, Big } from '@c4tplatform/camino-wallet-sdk'
+import { bnToBig, Big } from '@c4tplatform/camino-wallet-sdk/dist'
 //@ts-ignore
 import { BigNumInput } from '@c4tplatform/vue_components'
 import { BN } from '@c4tplatform/caminojs'
@@ -52,6 +53,7 @@ export default class AvaxInput extends Vue {
 
     @Prop() balance?: Big | null
     @Prop() alias?: string
+    @Prop() readonly?: boolean
 
     maxOut(ev: MouseEvent) {
         ev.preventDefault()
@@ -62,6 +64,17 @@ export default class AvaxInput extends Vue {
 
     amount_in(val: BN) {
         this.$emit('change', val)
+    }
+
+    get balanceBig() {
+        if (this.balance) {
+            let split = this.balance.toString().split('.')
+            let wholeStr = parseInt(split[0])
+                .toString()
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+            return wholeStr + '.' + split[1]
+        }
+        return '0'
     }
 
     get amountUSD(): Big {

@@ -40,7 +40,7 @@ const network_module: Module<NetworkState, RootState> = {
                     return
                 }
             }
-            state.networksCustom.push(net)
+            state.networksCustom = [...state.networksCustom, net]
             dispatch('save')
         },
 
@@ -135,8 +135,6 @@ const network_module: Module<NetworkState, RootState> = {
 
             // If authenticated
             if (rootState.isAuth) {
-                // Go back to wallet page
-                router.replace('/wallet/home')
                 for (var i = 0; i < rootState.wallets.length; i++) {
                     let w = rootState.wallets[i]
                     w.onnetworkchange()
@@ -144,7 +142,6 @@ const network_module: Module<NetworkState, RootState> = {
             }
 
             await dispatch('Assets/onNetworkChange', net, { root: true })
-            await dispatch('Launch/onNetworkChange', net, { root: true })
             dispatch('Assets/updateUTXOs', null, { root: true })
             dispatch('Platform/update', null, { root: true })
             dispatch('Platform/updateMinStakeAmount', null, { root: true })
@@ -179,10 +176,10 @@ const network_module: Module<NetworkState, RootState> = {
 
             let columbus = new AvaNetwork(
                 'Columbus',
-                'https://columbus.camino.network',
+                'https://columbus.camino.foundation',
                 1001,
-                'https://magellan.columbus.camino.network',
-                'https://explorer.columbus.camino.network',
+                'https://magellan.columbus.camino.foundation',
+                'https://playground.suite.camino.foundation/explorer',
                 true
             )
 
@@ -209,7 +206,7 @@ const network_module: Module<NetworkState, RootState> = {
             try {
                 let isSet = await dispatch('loadSelectedNetwork')
                 if (!isSet) {
-                    await dispatch('setNetwork', state.networks[1])
+                    await dispatch('setNetwork', state.networks[0])
                 }
                 return true
             } catch (e) {
