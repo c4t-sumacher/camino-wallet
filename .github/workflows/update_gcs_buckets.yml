@@ -56,9 +56,9 @@ jobs:
       - name: Update Bucket
         if: ${{ github.ref == 'refs/heads/c4t' || github.ref == 'refs/heads/suite-deployment' }}
         run: |
-          gsutil -m rsync -R -d dist gs://${{ steps.prepareVariables.outputs.bucket }}
+          gsutil -m rsync -J -R -d dist gs://${{ steps.prepareVariables.outputs.bucket }}
 
       - name: Update Production Bucket
         if: ${{ github.ref == 'refs/heads/c4t' && inputs.update_production }}
         run: |
-          gsutil -m rsync -R -d dist gs://${{ steps.prepareVariables.outputs.prodBucket }}
+          gsutil -m rsync -J -R -d dist gs://${{ steps.prepareVariables.outputs.prodBucket }}
