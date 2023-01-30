@@ -9,5 +9,6 @@ RUN yarn build
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.15
 COPY --from=build-stage /app/camino-wallet/dist/ /usr/share/nginx/html
+COPY --from=build-stage /app/camino-wallet/src/assets/json/ /usr/share/nginx/html/json
 # Copy the default nginx.conf provided by tiangolo/node-frontend
 COPY /nginx.conf /etc/nginx/conf.d/default.conf
