@@ -1008,7 +1008,7 @@
 "@c4tplatform/camino-wallet-sdk@file:camino-wallet-sdk":
   version "0.0.2"
   dependencies:
-    "@c4tplatform/caminojs" "file:../../../../.cache/yarn/v6/npm-@c4tplatform-camino-wallet-sdk-0.0.2-f5a55b79-2206-46fa-97e9-60a49ed3aa72-1675779007834/node_modules/@c4tplatform/camino-wallet-sdk/caminojs"
+    "@c4tplatform/caminojs" "file:../../../.cache/yarn/v6/npm-@c4tplatform-camino-wallet-sdk-0.0.2-c61a15b9-7e07-4845-bc5d-e7862b3cca95-1675781705688/node_modules/@c4tplatform/camino-wallet-sdk/caminojs"
     "@ethereumjs/tx" "3.4.0"
     "@ledgerhq/hw-app-eth" "6.12.2"
     "@ledgerhq/hw-transport" "^6.19.0"
@@ -1103,6 +1103,11 @@
     tough-cookie "~2.5.0"
     tunnel-agent "^0.6.0"
     uuid "^8.3.2"
+
+"@cypress/xpath@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@cypress/xpath/-/xpath-2.0.3.tgz#9a631d12cb935ba493fd30290163bde54c3c1428"
+  integrity sha512-Seilxmws+yty5lZSbwbjEOOiEbr7O1bCxKy2FC4jwMssC22yjByb5orDfBZPLZXYfmWZafJjvZFwts4Q3CzQAg==
 
 "@cypress/xvfb@^1.2.4":
   version "1.2.4"
