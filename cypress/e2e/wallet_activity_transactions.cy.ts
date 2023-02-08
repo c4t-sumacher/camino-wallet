@@ -8,8 +8,8 @@ describe('activity transactions', () => {
         cy.visit('/')
     })
 
-    it('has access/activity transactions', () => {
-        changeNetwork(cy);
+    it('has access/activity transactions', async () => {
+        await changeNetwork(cy);
 
         let address = [
             "prison",

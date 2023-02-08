@@ -1,8 +1,10 @@
 
 export function changeNetwork(cy: Cypress.cy & CyEventEmitter, network = 'Columbus') {
-    cy.get('.css-1nt3z7i > .MuiInputBase-root > .MuiSelect-select', { timeout: 20000 }).should('be.visible');
+    cy.get('.css-1nt3z7i > .MuiInputBase-root > .MuiSelect-select',{timeout:20000}).should('be.visible');
     cy.get('.css-1nt3z7i > .MuiInputBase-root > .MuiSelect-select').click(); //Network Switcher
     cy.get(`[data-value="${network}"] > .MuiTypography-root`).click(); //Select Columbus Network
+
+
 }
 
 export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address: string[]) {
