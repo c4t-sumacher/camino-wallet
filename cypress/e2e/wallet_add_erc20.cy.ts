@@ -1,5 +1,6 @@
 import { expect } from 'chai'
 import { changeNetwork, accessWallet } from '../utils/utils'
+import '@cypress/xpath'
 
 const NETWORK_SWITCHER_BUTTON = '[data-cy="network-switcher"]'
 
@@ -17,93 +18,50 @@ describe('activity transactions', () => {
         cy.get('.add_token_body > :nth-child(1) > input')
             .type('0xB63207E94F180c095793711BeEfb31352e129160')
             .then(() => {
+                let strUrlRpc: any = localStorage.getItem('network_selected')
+                let strUrlRpcArr = strUrlRpc.split('"')
 
-                cy.request({
-                    method: "POST",
-                    url: "**/ext/bc/C/rpc",
-                    body: {
-                        "jsonrpc": "2.0",
-                        "id": 15,
-                        "method": "eth_call",
-                        "params": [
-                          {
-                            "data": "0x06fdde03",
-                            "to": "0xe5be373a1452543d67d7d22935d4e4b46e4aad30"
-                          },
-                          "latest"
-                        ]
-                      }
-                });
+                cy.intercept({ method: 'POST', url: `${strUrlRpcArr[1]}/ext/bc/C/rpc` }, (req) => {
 
-                cy.intercept({ method: 'POST', url: '**/ext/bc/C/rpc', times: 1 }, (req) => {
-                    req.reply({
-                        status: 200,
-                        body: {
-                            jsonrpc: '2.0',
-                            id: 15,
-                            result:
-                                '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094976616e20436f696e0000000000000000000000000000000000000000000000',
-                        },
-                    })
-                });
-
-                cy.request({
-                    method: "POST",
-                    url: "**/ext/bc/C/rpc",
-                    body: {
-                        "jsonrpc": "2.0",
-                        "id": 16,
-                        "method": "eth_call",
-                        "params": [
-                          {
-                            "data": "0x95d89b41",
-                            "to": "0xe5be373a1452543d67d7d22935d4e4b46e4aad30"
-                          },
-                          "latest"
-                        ]
-                      }
-                });
-
-                // cy.intercept({ method: 'POST', url: '**/ext/bc/C/rpc', times: 1 }, (req) => {
-                //     req.reply({
-                //         status: 200,
-                //         body: {
-                //             jsonrpc: '2.0',
-                //             id: 16,
-                //             result:
-                //                 '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000034956430000000000000000000000000000000000000000000000000000000000',
-                //         },
-                //     })
-                // });
-
-                // cy.request({
-                //     method: "POST",
-                //     url: "**/ext/bc/C/rpc",
-                //     body: {
-                //         "jsonrpc": "2.0",
-                //         "id": 17,
-                //         "method": "eth_call",
-                //         "params": [
-                //           {
-                //             "data": "0x313ce567",
-                //             "to": "0xe5be373a1452543d67d7d22935d4e4b46e4aad30"
-                //           },
-                //           "latest"
-                //         ]
-                //       }
-                // });
-
-                // cy.intercept({ method: 'POST', url: '**/ext/bc/C/rpc', times: 1 }, (req) => {
-                //     req.reply({
-                //         status: 200,
-                //         body: {
-                //             jsonrpc: '2.0',
-                //             id: 17,
-                //             result:
-                //                 '0x0000000000000000000000000000000000000000000000000000000000000012',
-                //         },
-                //     });
-                // });
+                    switch (req.body.params[0].data) {
+                        case '0x06fdde03':
+                            req.reply({
+                                status: 200,
+                                body: {
+                                    interceptCase: 1,
+                                    jsonrpc: '2.0',
+                                    id: parseInt(req.body.id),
+                                    result:
+                                        '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000094976616e20436f696e0000000000000000000000000000000000000000000000',
+                                },
+                            })
+                            break
+                        case '0x95d89b41':
+                            req.reply({
+                                status: 200,
+                                body: {
+                                    interceptCase: 2,
+                                    jsonrpc: '2.0',
+                                    id: parseInt(req.body.id),
+                                    result:
+                                        '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000034956430000000000000000000000000000000000000000000000000000000000',
+                                },
+                            })
+                            break
+                        case '0x313ce567':
+                            req.reply({
+                                status: 200,
+                                body: {
+                                    interceptCase: 3,
+                                    jsonrpc: '2.0',
+                                    id: parseInt(req.body.id),
+                                    result:
+                                        '0x0000000000000000000000000000000000000000000000000000000000000012',
+                                },
+                            })
+                            break
+                    }
+                })
 
                 cy.get('.add_token_body > .button_secondary > .v-btn__content').click()
             })

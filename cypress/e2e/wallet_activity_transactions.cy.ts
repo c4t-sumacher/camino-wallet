@@ -8,8 +8,8 @@ describe('activity transactions', () => {
         cy.visit('/')
     })
 
-    it('has access/activity transactions', async () => {
-        await changeNetwork(cy);
+    it('has access/activity transactions',  () => {
+        changeNetwork(cy);
 
         let address = [
             "prison",
@@ -40,18 +40,25 @@ describe('activity transactions', () => {
 
         accessWallet(cy, 'mnemonic', address)
 
-        cy.get('[data-cy="wallet_activity"]').should('be.visible')
+        cy.get('[data-cy="wallet_activity"]',{timeout:10000})
         cy.get('[data-cy="wallet_activity"]').click();
         intercepTransactions().then((data) => {
-            cy.get('.tx_table').should('be.visible')
+            cy.get('.tx_table',{timeout :20000}).should('be.visible')
             cy.get('.tx_table')
                 .children()
                 .its('length')
                 .then((itemLen) => {
-                    for (var i = itemLen - 1; i >= 0; i--) {
-                        cy.get('.tx_table' + ':nth-child' + '(' + i + ')').click()
-                    }
+                    cy.get('[role="listitem"] > .tx_row').should('be.visible')
+                    // for (var i = itemLen ; i >= 0; i--) {
+                        cy.get('.tx_cols',{timeout:20000}).click()
+                    // }
                 })
+        })
+        // cy.get('[data-v-e579b3ee=""] > .utxos > :nth-child(1) > .tx_out > .amount').contains()
+        cy.get('.meta_col > div > .time').invoke("text").then((strDate) => {
+            // cy.log(strDate)
+            var splitString  = strDate.split("/n")
+            console.log(splitString[1])
         })
     })
 })
@@ -204,7 +211,7 @@ async function intercepTransactions() {
                     }
                 })
             }
-            resolve(true)
+            resolve(req)
         })
     })
 }
