@@ -20,7 +20,7 @@ export function addLocalNetwork(cy: Cypress.cy & CyEventEmitter) {
     cy.get(`[data-cy="network-name-${localNetworkName}"]`).click()
 }
 
-export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address: any) {
+export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address?: any) {
     cy.get('[data-cy="app-selector-menu"]').click()
     cy.get('[data-cy="app-selector-Wallet"]').click()
 
