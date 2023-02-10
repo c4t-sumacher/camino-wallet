@@ -6,7 +6,7 @@ import Web3 from 'web3'
 
 const path: string = '/ext/bc/C/rpc'
 
-describe('Wallet Creation', () => {
+describe('Manage Keys', () => {
     before(() => {
         cy.visit('/')
     })
