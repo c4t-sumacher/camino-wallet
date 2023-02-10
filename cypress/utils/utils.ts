@@ -7,7 +7,7 @@ export function changeNetwork(cy: Cypress.cy & CyEventEmitter, network = 'Columb
 
 }
 
-export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address: string[]) {
+export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address: any) {
     cy.get('.css-1gr9h7h > .MuiTypography-root').click();
     if (type === "mnemonic") {
         cy.get('.css-1u20msc > :nth-child(1) > :nth-child(2) > .MuiButtonBase-root').click();
