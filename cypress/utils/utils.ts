@@ -26,14 +26,17 @@ export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string
 
     if (type === 'mnemonic') {
         cy.get('[data-cy="btn-wallet-access-mnemonic"]').click()
-        cy.readFile(`cypress/temp/wallets/mnemonic_wallet.json`).then((data) => {
-            let phraseArr = data
-            for (let i = 0; i < phraseArr.length; i++) {
-                let indexInput = i + 1
-                cy.get(`[data-cy="mnemonic-field-${indexInput}"]`).type(phraseArr[i])
-            }
-            cy.get('[data-cy="btn-submit-mnemonic-phrase"]').click({ force: true })
-        })
+
+        let phraseArr: string[] = [];
+        if (address != null && address != undefined) {
+            phraseArr = address;
+            accessWalletMnemonic(cy, phraseArr)
+        }
+        else {
+            cy.readFile(`cypress/temp/wallets/mnemonic_wallet.json`).then((data) => {
+                accessWalletMnemonic(cy,data);
+            });
+        }
     }
     if (type === 'privateKey') {
         cy.get('[data-cy="btn-wallet-access-private-key"]').click({ force: true })
@@ -43,4 +46,13 @@ export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string
         })
         cy.get('[data-cy="btn-submit-private-key"]').click()
     }
+}
+
+function accessWalletMnemonic(cy, data) {
+    let phraseArr = data
+    for (let i = 0; i < phraseArr.length; i++) {
+        let indexInput = i + 1
+        cy.get(`[data-cy="mnemonic-field-${indexInput}"]`).type(phraseArr[i])
+    }
+    cy.get('[data-cy="btn-submit-mnemonic-phrase"]').click({ force: true });
 }
