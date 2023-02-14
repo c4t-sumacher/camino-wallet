@@ -1,7 +1,9 @@
 import { expect } from 'chai'
-import { changeNetwork, accessWallet } from '../utils/utils'
+import { changeNetwork, accessWallet, addLocalNetwork } from '../utils/utils'
 import moment from 'moment'
+import '@cypress/xpath'
 
+let addressFrom = ''
 const NETWORK_SWITCHER_BUTTON = '[data-cy="network-switcher"]'
 const dataBody = {
     transactions: [
@@ -133,38 +135,42 @@ describe('activity transactions', () => {
         cy.visit('/')
     })
 
-    it('has access/activity transactions', () => {
+    it('access activity transactions', () => {
         changeNetwork(cy)
 
         let address = [
-            'prison',
-            'assist',
-            'dress',
-            'stay',
-            'target',
-            'same',
-            'brown',
-            'rally',
-            'remove',
-            'spice',
-            'abstract',
-            'liberty',
-            'valley',
-            'program',
-            'wealth',
-            'vacuum',
-            'claw',
-            'cat',
-            'april',
-            'relief',
-            'choice',
-            'voyage',
-            'toddler',
-            'forum',
-        ]
+            "prison",
+            "assist",
+            "dress",
+            "stay",
+            "target",
+            "same",
+            "brown",
+            "rally",
+            "remove",
+            "spice",
+            "abstract",
+            "liberty",
+            "valley",
+            "program",
+            "wealth",
+            "vacuum",
+            "claw",
+            "cat",
+            "april",
+            "relief",
+            "choice",
+            "voyage",
+            "toddler",
+            "forum"
+        ];
+        
         accessWallet(cy, 'mnemonic', address)
+
+        cy.wait(10000)
         cy.get('[data-cy="wallet_activity"]', { timeout: 20000 })
         cy.get('[data-cy="wallet_activity"]').click()
+
         cy.intercept('POST', '**/v2/transactions', (req) => {
             if (req.body.chainID[0] == '11111111111111111111111111111111LpoYY') {
                 req.reply({
@@ -185,6 +191,14 @@ describe('activity transactions', () => {
 
         cy.get('[data-cy="tx-table-activity"]', { timeout: 7000 }).should('be.visible')
         cy.get('.tx_cols', { timeout: 7000 }).should('be.visible')
+
+        cy.get('[data-cy="tx-detail-0"] > .infoTx > .utxos > :nth-child(1) > .tx_out > .addresses > p')
+            .invoke('text')
+            .then((textAddress) => {
+                addressFrom = textAddress.replace('from ', '')
+                cy.log(addressFrom)
+            })
+
         cy.log('Table Ok')
         cy.get('.meta_col > div > .time', { timeout: 7000 })
             .invoke('text')
@@ -200,7 +214,7 @@ describe('activity transactions', () => {
                 let hourMorningOrAfternoon = `${aHourFormat[0]}${aHourFormat[1].replace(' ', '')}`
                 let str4lformatDate = `${arrStrTextDate[1]}/${arrStrTextDate[0]}/${arrStrTextDate[2]} ${arrStrTextDate[3]} ${hourMorningOrAfternoon}`
                 let dateUTC = moment(str4lformatDate, 'DD/MMM/YYYY hh:mm:ss a').toISOString()
-                cy.get('[data-v-e579b3ee=""] > .utxos > :nth-child(1) > .tx_out > .amount')
+                cy.get('[data-cy="tx-detail-0"] > .infoTx > .utxos > :nth-child(1) > .tx_out > .amount')
                     .should('be.visible')
                     .invoke('text')
                     .then((textAmount) => {
@@ -211,10 +225,12 @@ describe('activity transactions', () => {
                                     textData != '\n' && textData != '' && textData != 'CAM\n'
                             )
                         let amount = parseInt(textAmountArr[0].replace('\n', '')) * 1000000000
+
                         if (
                             dateUTC.replace('.000', '') ==
                                 dataBody.transactions[0].outputs[1].timestamp ||
                             amount == parseInt(dataBody.transactions[0].outputs[1].amount)
+                            || addressFrom == dataBody[0].inputs[0].output.addresses[0]
                         ) {
                             cy.log('success')
                         } else {
