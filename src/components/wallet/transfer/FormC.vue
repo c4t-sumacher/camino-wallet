@@ -60,9 +60,6 @@
                     {{ $t('transfer.fee_tx') }}
                     <span>{{ maxFeeText }} {{ nativeAssetSymbol }}</span>
                 </p>
-                <p>
-                    <span>${{ maxFeeUSD.toLocaleString(2) }} USD</span>
-                </p>
             </div>
             <template v-if="!isSuccess">
                 <p class="err">{{ err }}</p>
@@ -238,18 +235,6 @@ export default class FormC extends Vue {
         else return this.formToken.data.symbol
     }
 
-    get totalUSD(): Big | null {
-        if (this.formToken !== 'native') {
-            return null
-        }
-
-        let bigAmt = bnToBig(this.amountIn, 18)
-        let usdPrice = this.priceDict.usd
-        let bigFee = bnToBig(this.maxFee, 18)
-        let usdBig = bigAmt.add(bigFee).times(usdPrice)
-        return usdBig
-    }
-
     get nativeAssetSymbol(): string {
         return this.$store.getters['Assets/AssetAVA']?.symbol ?? ''
     }
@@ -291,10 +276,6 @@ export default class FormC extends Vue {
     get maxFee(): BN {
         let res = this.gasPrice.mul(new BN(this.gasLimit))
         return res
-    }
-
-    get maxFeeUSD() {
-        return bnToBigAvaxC(this.maxFee).times(this.priceDict.usd)
     }
 
     get maxFeeText(): string {
@@ -459,7 +440,11 @@ export default class FormC extends Vue {
         this.isLoading = false
         this.isSuccess = true
         this.txHash = txId
-
+        let { dispatchNotification } = this.globalHelper()
+        dispatchNotification({
+            message: this.$t('transfer.success_msg'),
+            type: 'success',
+        })
         // Refresh UTXOs
         this.canSendAgain = false
         setTimeout(() => {
@@ -472,7 +457,11 @@ export default class FormC extends Vue {
     onError(err: any) {
         this.err = err
         this.isLoading = false
-
+        let { dispatchNotification } = this.globalHelper()
+        dispatchNotification({
+            message: this.$t('transfer.error_msg'),
+            type: 'error',
+        })
         console.error(err)
     }
 }
@@ -526,6 +515,9 @@ input,
     column-gap: 14px;
     input {
         width: 100%;
+        &:disabled {
+            color: var(--primary-color-light);
+        }
     }
 }
 

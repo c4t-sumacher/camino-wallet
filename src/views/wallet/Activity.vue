@@ -380,7 +380,6 @@ export default class Activity extends Vue {
 
 .explorer_warning {
     position: absolute;
-    background-color: var(--bg);
     width: 100%;
     height: 100%;
     top: 0;
@@ -438,8 +437,6 @@ export default class Activity extends Vue {
 .table_headers {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    //border-bottom: 1px solid var(--bg-light);
-    //background-color: var(--bg-light);
 }
 
 .month_group {
@@ -458,9 +455,6 @@ export default class Activity extends Vue {
 
 .cols {
     height: 100%;
-    //overflow: auto;
-    //display: grid;
-    //grid-template-columns: 1fr 240px;
 }
 
 .empty,
@@ -477,8 +471,6 @@ export default class Activity extends Vue {
     padding: 30px;
 }
 .spinner {
-    //width: 40px;
-    //height: 40px;
     font-size: 32px;
     margin-bottom: 22px;
     color: #1d82bb;

@@ -57,10 +57,6 @@
                             {{ $t('transfer.fee_tx') }}
                             <span>{{ txFee.toLocaleString(9) }} {{ nativeAssetSymbol }}</span>
                         </p>
-                        <p>
-                            {{ $t('transfer.total_native') }}
-                            <span>{{ totalUSD.toLocaleString(2) }} USD</span>
-                        </p>
                     </div>
                     <div class="checkout">
                         <ul class="err_list" v-if="formErrors.length > 0">
@@ -121,7 +117,7 @@
                                 block
                                 :disabled="!canSendAgain"
                             >
-                                New Transaction
+                                {{ $t('transfer.c_chain.reset') }}
                             </v-btn>
                         </template>
                     </div>
@@ -300,7 +296,11 @@ export default class Transfer extends Vue {
     async onsuccess(txId: string) {
         this.isAjax = false
         this.isSuccess = true
-
+        let { dispatchNotification } = this.globalHelper()
+        dispatchNotification({
+            message: this.$t('transfer.success_msg'),
+            type: 'success',
+        })
         // Update the user's balance
         this.$store.dispatch('Assets/updateUTXOs').then(() => {
             this.updateSendAgainLock()
@@ -321,6 +321,11 @@ export default class Transfer extends Vue {
     onerror(err: any) {
         this.err = err
         this.isAjax = false
+        let { dispatchNotification } = this.globalHelper()
+        dispatchNotification({
+            message: this.$t('transfer.error_msg'),
+            type: 'error',
+        })
     }
 
     submit() {
@@ -430,14 +435,6 @@ export default class Transfer extends Vue {
     get txFee(): Big {
         let fee = ava.XChain().getTxFee()
         return bnToBig(fee, 9)
-    }
-
-    get totalUSD(): Big {
-        let totalAsset = this.avaxTxSize.add(ava.XChain().getTxFee())
-        let bigAmt = bnToBig(totalAsset, 9)
-        let usdPrice = this.priceDict.usd
-        let usdBig = bigAmt.times(usdPrice)
-        return usdBig
     }
 
     get addresses() {

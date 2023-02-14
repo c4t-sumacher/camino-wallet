@@ -3,16 +3,16 @@ export function changeNetwork(cy: Cypress.cy & CyEventEmitter, network = 'Columb
     cy.get(`[data-cy="network-name-${network}"]`).click() //Select Columbus Network
 }
 
-export function addLocalNetwork(cy: Cypress.cy & CyEventEmitter) {
-    const localNetworkName = 'Localhost'
+export function addKopernikusNetwork(cy: Cypress.cy & CyEventEmitter) {
+    const localNetworkName = 'Kopernikus'
 
     cy.get('[data-cy="network-selector"]').click()
     cy.get('[data-cy="add-custom-network"]').click();
     cy.wait(2000);
     cy.get('[data-cy="add-network-field-network-name"]').type(localNetworkName)
     cy.get('[data-cy="add-network-field-protocol"]').clear()
-    cy.get('[data-cy="add-network-field-protocol"]').type('http')
-    cy.get('[data-cy="add-network-field-host"]').type('localhost')
+    cy.get('[data-cy="add-network-field-protocol"]').type('https')
+    cy.get('[data-cy="add-network-field-host"]').type('kopernikus.camino.network')
     cy.get('[data-cy="add-network-field-port"]').clear();
     cy.get('[data-cy="add-network-field-port"]').type('9650')
     cy.get('[data-cy="add-network-field-magellan-address"]').type('http://localhost:8080/')

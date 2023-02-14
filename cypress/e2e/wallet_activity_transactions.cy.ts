@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { changeNetwork, accessWallet, addLocalNetwork } from '../utils/utils'
+import { changeNetwork, accessWallet, addKopernikusNetwork } from '../utils/utils'
 import moment from 'moment'
 import '@cypress/xpath'
 
