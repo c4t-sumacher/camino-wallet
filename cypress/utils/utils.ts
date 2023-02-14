@@ -11,32 +11,29 @@ export function addKopernikusNetwork(cy: Cypress.cy & CyEventEmitter) {
     cy.wait(2000);
     cy.get('[data-cy="add-network-field-network-name"]').type(localNetworkName)
     cy.get('[data-cy="add-network-field-protocol"]').clear()
-    cy.get('[data-cy="add-network-field-protocol"]').type('https')
-    cy.get('[data-cy="add-network-field-host"]').type('kopernikus.camino.network')
+    cy.get('[data-cy="add-network-field-protocol"]').type('http')
+    cy.get('[data-cy="add-network-field-host"]').type('localhost')
     cy.get('[data-cy="add-network-field-port"]').clear();
     cy.get('[data-cy="add-network-field-port"]').type('9650')
-    cy.get('[data-cy="add-network-field-magellan-address"]').type('http://localhost:8080/')
+    cy.get('[data-cy="add-network-field-magellan-address"]').type('http://localhost:8080')
     cy.get('[data-cy="btn-add-network"]').click()
     cy.get(`[data-cy="network-name-${localNetworkName}"]`).click()
 }
 
-export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string, address?: any) {
+export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string) {
     cy.get('[data-cy="app-selector-menu"]').click()
     cy.get('[data-cy="app-selector-Wallet"]').click()
 
     if (type === 'mnemonic') {
         cy.get('[data-cy="btn-wallet-access-mnemonic"]').click()
-
-        let phraseArr: string[] = [];
-        if (address != null && address != undefined) {
-            phraseArr = address;
-            accessWalletMnemonic(cy, phraseArr)
-        }
-        else {
-            cy.readFile(`cypress/temp/wallets/mnemonic_wallet.json`).then((data) => {
-                accessWalletMnemonic(cy,data);
-            });
-        }
+        cy.readFile(`cypress/temp/wallets/mnemonic_wallet.json`).then((data) => {
+            let phraseArr = data
+            for (let i = 0; i < phraseArr.length; i++) {
+                let indexInput = i + 1
+                cy.get(`[data-cy="mnemonic-field-${indexInput}"]`).type(phraseArr[i])
+            }
+            cy.get('[data-cy="btn-submit-mnemonic-phrase"]').click({ force: true })
+        })
     }
     if (type === 'privateKey') {
         cy.get('[data-cy="btn-wallet-access-private-key"]').click({ force: true })
@@ -46,13 +43,4 @@ export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string
         })
         cy.get('[data-cy="btn-submit-private-key"]').click()
     }
-}
-
-function accessWalletMnemonic(cy, data) {
-    let phraseArr = data
-    for (let i = 0; i < phraseArr.length; i++) {
-        let indexInput = i + 1
-        cy.get(`[data-cy="mnemonic-field-${indexInput}"]`).type(phraseArr[i])
-    }
-    cy.get('[data-cy="btn-submit-mnemonic-phrase"]').click({ force: true });
 }

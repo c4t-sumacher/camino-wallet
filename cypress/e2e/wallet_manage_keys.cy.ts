@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import '@cypress/xpath'
-import { changeNetwork, accessWallet,addLocalNetwork } from '../utils/utils'
+import { changeNetwork, accessWallet,addKopernikusNetwork } from '../utils/utils'
 import moment from 'moment'
 import Web3 from 'web3'
 
@@ -14,10 +14,10 @@ describe('Wallet Creation', () => {
     it('open suite/create wallet', () => {
         
         //changeNetwork(cy)
-        addLocalNetwork(cy);
+        addKopernikusNetwork(cy);
         
         cy.readFile(`cypress/temp/wallets/mnemonic_wallet.json`).then((mnemonicPhrase) => {
-            accessWallet(cy, 'mnemonic', mnemonicPhrase);
+            accessWallet(cy, 'mnemonic');
             cy.get('[data-cy="wallet_manage"]', { timeout: 5000 })
                 .click()
                 .then(() => {
