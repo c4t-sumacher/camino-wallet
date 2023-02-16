@@ -3,21 +3,23 @@ export function changeNetwork(cy: Cypress.cy & CyEventEmitter, network = 'Columb
     cy.get(`[data-cy="network-name-${network}"]`).click() //Select Columbus Network
 }
 
-export function addKopernikusNetwork(cy: Cypress.cy & CyEventEmitter) {
-    const localNetworkName = 'Kopernikus'
+export function acceptCookies () {
+    cy.get('.cc-nb-okagree').click();
+}
 
-    cy.get('[data-cy="network-selector"]').click()
-    cy.get('[data-cy="add-custom-network"]').click()
-    cy.wait(2000)
-    cy.get('[data-cy="add-network-field-network-name"]').clear()
-    cy.get('[data-cy="add-network-field-network-name"]').type(localNetworkName)
-    cy.get('[data-cy="add-network-field-url"]').clear()
-    cy.get('[data-cy="add-network-field-url"]').type('https://kopernikus.camino.network:443')
-    cy.get('[data-cy="add-network-field-magellan-address"]').type(
-        'https://magellan.kopernikus.camino.network/'
-    )
-    cy.get('[data-cy="btn-add-network"]').click()
-    cy.get(`[data-cy="network-name-${localNetworkName}"]`).click()
+
+export function addKopernikusNetwork(cy: Cypress.cy & CyEventEmitter) {
+
+    let networkName : string = "Kopernikus";
+    cy.get('[data-cy="network-selector"]',{timeout: 12000}).click();
+    cy.get('[data-cy="add-custom-network"]',{timeout: 12000}).click();
+    cy.wait(2000);
+    cy.get('[data-cy="add-network-field-network-name"]',{timeout: 12000}).find('input',{timeout: 12000}).type(networkName);
+    cy.get('[data-cy="add-network-field-url"]',{timeout: 12000}).find('input',{timeout: 12000}).type('https://kopernikus.camino.network:443',{force: true})
+    cy.get('[data-cy="add-network-field-magellan-address"]',{timeout: 12000}).find('input',{timeout: 12000}).type('https://magellan.kopernikus.camino.network/',{force: true});
+    cy.get('[data-cy="btn-add-network"]',{timeout: 12000}).click();
+    cy.get(`[data-cy="network-name-${networkName}"]`,{timeout: 12000}).click();
+    cy.wait(2000);
 }
 
 export async function accessWallet(cy: Cypress.cy & CyEventEmitter, type: string) {
