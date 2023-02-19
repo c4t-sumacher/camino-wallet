@@ -129,7 +129,7 @@ import 'reflect-metadata'
 import { Component, Vue } from 'vue-property-decorator'
 //@ts-ignore
 import AvaxInput from '@/components/misc/AvaxInput.vue'
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import Big from 'big.js'
 //@ts-ignore
 import { QrInput } from '@c4tplatform/vue_components'

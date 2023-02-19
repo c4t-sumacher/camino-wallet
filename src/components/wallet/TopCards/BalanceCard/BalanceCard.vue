@@ -117,7 +117,6 @@ import { ava } from '@/AVA'
 })
 export default class BalanceCard extends Vue {
     isBreakdown = false
-    intervalId: NodeJS.Timeout | number | null = null
     $refs!: {
         utxos_modal: UtxosBreakdownModal
     }

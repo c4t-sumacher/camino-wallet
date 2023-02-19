@@ -17,7 +17,7 @@
         "typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"],
         "types": ["webpack-env", "vuetify", "ts-jest", "cypress"],
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["./src/*"]
         },
         "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
     },

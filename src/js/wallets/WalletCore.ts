@@ -1,7 +1,7 @@
 /*
 The base wallet class used for common functionality
 */
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import { UTXOSet as AVMUTXOSet } from '@c4tplatform/caminojs/dist/apis/avm'
 import { UTXOSet as PlatformUTXOSet } from '@c4tplatform/caminojs/dist/apis/platformvm'
 import {

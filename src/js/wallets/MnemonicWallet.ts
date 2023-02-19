@@ -25,7 +25,7 @@ import {
 import { PayloadBase } from '@c4tplatform/caminojs/dist/utils'
 
 import * as bip39 from 'bip39'
-import { BN, Buffer as BufferAvalanche } from '@c4tplatform/caminojs'
+import { BN, Buffer as BufferAvalanche } from '@c4tplatform/caminojs/dist'
 import { ava, bintools } from '@/AVA'
 import { IAvaHdWallet } from '@/js/wallets/types'
 import HDKey from 'hdkey'

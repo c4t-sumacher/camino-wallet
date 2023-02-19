@@ -36,7 +36,7 @@ import {
 } from '@/js/Keystore'
 import { LedgerWallet } from '@/js/wallets/LedgerWallet'
 import { SingletonWallet } from '@/js/wallets/SingletonWallet'
-import { Buffer } from '@c4tplatform/caminojs'
+import { Buffer } from '@c4tplatform/caminojs/dist'
 import { privateToAddress } from 'ethereumjs-util'
 import { updateFilterAddresses } from '../providers'
 import { getAvaxPriceUSD } from '@/helpers/price_helper'
@@ -265,12 +265,8 @@ export default new Vuex.Store({
             let orders = data.orders
             let memo = data.memo
 
-            try {
-                let txId: string = await wallet.issueBatchTx(orders, toAddr, memo)
-                return txId
-            } catch (e) {
-                throw e
-            }
+            let txId: string = await wallet.issueBatchTx(orders, toAddr, memo)
+            return txId
         },
 
         async activateWallet({ state, dispatch, commit }, wallet: MnemonicWallet | LedgerWallet) {
@@ -330,44 +326,40 @@ export default new Vuex.Store({
 
             let version = fileData.version
 
-            try {
-                // Decrypt the key file with the password
-                let keyFile: AllKeyFileDecryptedTypes = await readKeyFile(fileData, pass)
-                // Extract wallet keys
-                let keys = extractKeysFromDecryptedFile(keyFile)
+            // Decrypt the key file with the password
+            let keyFile: AllKeyFileDecryptedTypes = await readKeyFile(fileData, pass)
+            // Extract wallet keys
+            let keys = extractKeysFromDecryptedFile(keyFile)
 
-                // If not auth, login user then add keys
-                if (!store.state.isAuth) {
-                    await store.dispatch('accessWalletMultiple', {
-                        keys,
-                        activeIndex: keyFile.activeIndex,
-                    })
-                } else {
-                    for (let i = 0; i < keys.length; i++) {
-                        let key = keys[i]
+            // If not auth, login user then add keys
+            if (!store.state.isAuth) {
+                await store.dispatch('accessWalletMultiple', {
+                    keys,
+                    activeIndex: keyFile.activeIndex,
+                })
+            } else {
+                for (let i = 0; i < keys.length; i++) {
+                    let key = keys[i]
 
-                        // Private keys from the keystore file do not have the PrivateKey- prefix
-                        if (key.type === 'mnemonic') {
-                            await store.dispatch('addWalletMnemonic', key.key)
-                        } else if (key.type === 'singleton') {
-                            await store.dispatch('addWalletSingleton', key.key)
-                        }
+                    // Private keys from the keystore file do not have the PrivateKey- prefix
+                    if (key.type === 'mnemonic') {
+                        await store.dispatch('addWalletMnemonic', key.key)
+                    } else if (key.type === 'singleton') {
+                        await store.dispatch('addWalletSingleton', key.key)
                     }
                 }
+            }
 
-                // Keystore warning flag asking users to update their keystore files;
-                store.state.warnUpdateKeyfile = false
-                if (version !== KEYSTORE_VERSION) {
-                    store.state.warnUpdateKeyfile = true
-                }
-                store.state.volatileWallets = []
+            // Keystore warning flag asking users to update their keystore files;
+            store.state.warnUpdateKeyfile = false
+            if (version !== KEYSTORE_VERSION) {
+                store.state.warnUpdateKeyfile = true
+            }
+            store.state.volatileWallets = []
 
-                return {
-                    success: true,
-                    message: 'success',
-                }
-            } catch (err) {
-                throw err
+            return {
+                success: true,
+                message: 'success',
             }
         },
 

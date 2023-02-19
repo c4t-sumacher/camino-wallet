@@ -29,23 +29,19 @@ async function generateToken(privateKey: string): Promise<AccessToken> {
     let privKey = keyPair.getPrivate('hex')
     let pubKey = keyPair.getPublic()
     let { nonce } = await getNonce()
-    let msgHash = sha3.keccak256(Buffer.from(nonce, 'hex'))
+    let msgHash = sha3.keccak_256(Buffer.from(nonce, 'hex'))
     let signature = ec.sign(msgHash, privKey, 'hex', { canonical: true })
-    try {
-        let req = {
-            nonce: nonce,
-            signature: Buffer.concat([
-                signature.r.toArrayLike(Buffer, 'be', 32),
-                signature.s.toArrayLike(Buffer, 'be', 32),
-                Buffer.from([signature.recoveryParam]),
-            ]).toString('hex'),
-            public_key: pubKey.encode('hex', false),
-        }
-        let res = await kyc_api.post('/accessToken', req)
-        return res.data
-    } catch (e) {
-        throw e
+    let req = {
+        nonce: nonce,
+        signature: Buffer.concat([
+            signature.r.toArrayLike(Buffer, 'be', 32),
+            signature.s.toArrayLike(Buffer, 'be', 32),
+            Buffer.from([signature.recoveryParam]),
+        ]).toString('hex'),
+        public_key: pubKey.encode('hex', false),
     }
+    let res = await kyc_api.post('/accessToken', req)
+    return res.data
 }
 
 async function checkVerificationStatus(
@@ -56,12 +52,8 @@ async function checkVerificationStatus(
     let pubKey = keyPair.getPublic()
     let url = `/verified/${activeNetworkName}/${pubKey.encode('hex', false)}`
 
-    try {
-        let res = await kyc_api.get(url)
-        return res.data.kyc_verified
-    } catch (e) {
-        throw e
-    }
+    let res = await kyc_api.get(url)
+    return res.data.kyc_verified
 }
 
 export { kyc_api, generateToken, checkVerificationStatus }

@@ -12,7 +12,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { NFTTransferOutput, UTXO } from '@c4tplatform/caminojs/dist/apis/avm'
 import { PayloadBase } from '@c4tplatform/caminojs/dist/utils'
-import { Buffer } from '@c4tplatform/caminojs'
+import { Buffer } from '@c4tplatform/caminojs/dist'
 import { PayloadTypes } from '@c4tplatform/caminojs/dist/utils'
 import NFTViewModal from '@/components/modals/NFTViewModal.vue'
 import NftCard from '@/components/wallet/portfolio/NftCard.vue'

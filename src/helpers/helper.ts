@@ -10,7 +10,7 @@ import {
 import { ONEAVAX, PayloadBase, PayloadTypes } from '@c4tplatform/caminojs/dist/utils'
 import Big from 'big.js'
 
-import { Buffer, BN } from '@c4tplatform/caminojs'
+import { Buffer, BN } from '@c4tplatform/caminojs/dist'
 import createHash from 'create-hash'
 
 function bnToBig(val: BN, denomination = 0): Big {

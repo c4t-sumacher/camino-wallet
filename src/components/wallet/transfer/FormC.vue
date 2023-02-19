@@ -139,7 +139,7 @@ import {
 // @ts-ignore
 import { QrInput } from '@c4tplatform/vue_components'
 import Big from 'big.js'
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import { bnToBig } from '@/helpers/helper'
 import { web3 } from '@/evm'
 import EVMInputDropdown from '@/components/misc/EVMInputDropdown/EVMInputDropdown.vue'
@@ -160,7 +160,7 @@ export default class FormC extends Vue {
     addressIn = ''
     amountIn = new BN(0)
     gasPrice = new BN(225000000000)
-    gasPriceInterval: NodeJS.Timeout | undefined = undefined
+    gasPriceInterval: number | undefined = undefined
     gasLimit = 21000
     err = ''
     isLoading = false
@@ -182,7 +182,7 @@ export default class FormC extends Vue {
     created() {
         // Update gas price automatically
         this.updateGasPrice()
-        this.gasPriceInterval = setInterval(() => {
+        this.gasPriceInterval = window.setInterval(() => {
             if (!this.isConfirm) {
                 this.updateGasPrice()
             }

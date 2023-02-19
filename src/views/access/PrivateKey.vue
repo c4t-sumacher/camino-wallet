@@ -38,7 +38,6 @@ export default class PrivateKey extends Vue {
     error: string = ''
     async access() {
         if (!this.canSubmit || this.isLoading) return
-        let parent = this
         this.error = ''
         this.isLoading = true
         let key = this.privatekey

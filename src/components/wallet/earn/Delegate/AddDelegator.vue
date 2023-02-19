@@ -207,7 +207,7 @@ import ConfirmPage from '@/components/wallet/earn/Delegate/ConfirmPage.vue'
 import Big from 'big.js'
 import moment from 'moment'
 
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import { AmountOutput, UTXO } from '@c4tplatform/caminojs/dist/apis/platformvm'
 import { ava, bintools } from '@/AVA'
 import MnemonicWallet from '@/js/wallets/MnemonicWallet'

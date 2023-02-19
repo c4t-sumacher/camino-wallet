@@ -21,7 +21,7 @@ import {
 } from '@c4tplatform/caminojs/dist/apis/evm'
 
 import { ITransaction } from '@/components/wallet/transfer/types'
-import { BN, Buffer } from '@c4tplatform/caminojs'
+import { BN, Buffer } from '@c4tplatform/caminojs/dist'
 import { PayloadBase } from '@c4tplatform/caminojs/dist/utils'
 import Erc20Token from '@/js/Erc20Token'
 

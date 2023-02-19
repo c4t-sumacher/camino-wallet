@@ -1,7 +1,7 @@
 import { UTXO, UTXOSet } from '@c4tplatform/caminojs/dist/apis/avm'
 
 import AvaAsset from '@/js/AvaAsset'
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import { AvaNftFamily } from '@/js/AvaNftFamily'
 import { IWalletBalanceDict, PlatformBalances } from '@/store/types'
 import { UTXO as AVMUTXO } from '@c4tplatform/caminojs/dist/apis/avm/utxos'

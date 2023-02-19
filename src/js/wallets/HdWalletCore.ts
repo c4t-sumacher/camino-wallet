@@ -1,7 +1,7 @@
 import { ChainAlias } from '@/js/wallets/types'
 import { UTXO } from '@c4tplatform/caminojs/dist/apis/avm'
 
-import { BN, Buffer } from '@c4tplatform/caminojs'
+import { BN, Buffer } from '@c4tplatform/caminojs/dist'
 import { ITransaction } from '@/components/wallet/transfer/types'
 import { ava, bintools } from '@/AVA'
 import { UTXOSet as AVMUTXOSet } from '@c4tplatform/caminojs/dist/apis/avm/utxos'

@@ -11,7 +11,7 @@ import i18n from './plugins/i18n'
 import './index.css'
 Vue.use(VueMeta)
 Vue.use(BootstrapVue)
-Vue.component('datetime', Datetime)
+Vue.component('DateTime', Datetime)
 
 Vue.config.productionTip = false
 
@@ -23,7 +23,8 @@ const app = new Vue({
     render: (h) => h(App),
     created: () => {
         store.commit('Accounts/loadAccounts')
-        if (store.getters['Accounts/hasAccounts'] > 0) router.replace('/access')
+        if (store.getters['Accounts/hasAccounts'] > 0 && router.currentRoute.path !== '/access')
+            router.replace('/access')
     },
     mounted() {
         // Reveal app version
@@ -33,6 +34,9 @@ const app = new Vue({
         if (loader) {
             loader.style.display = 'none'
         }
+    },
+    components: {
+        App,
     },
     data: {
         theme: 'day',

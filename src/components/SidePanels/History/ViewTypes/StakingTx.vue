@@ -86,7 +86,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ITransactionData } from '@/store/modules/history/types'
-import { BN } from '@c4tplatform/caminojs'
+import { BN } from '@c4tplatform/caminojs/dist'
 import { bnToBig } from '@/helpers/helper'
 import { UnixNow } from '@c4tplatform/caminojs/dist/utils'
 import { ValidatorRaw } from '@/components/misc/ValidatorList/types'

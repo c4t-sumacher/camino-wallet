@@ -1,6 +1,6 @@
 import Big from 'big.js'
 
-import { Buffer, BN } from '@c4tplatform/caminojs'
+import { Buffer, BN } from '@c4tplatform/caminojs/dist'
 import AvaAsset from '@/js/AvaAsset'
 import MnemonicWallet from '@/js/wallets/MnemonicWallet'
 import { ITransaction } from '@/components/wallet/transfer/types'

@@ -8,7 +8,7 @@ import EthereumjsCommon from '@ethereumjs/common'
 import { Transaction } from '@ethereumjs/tx'
 
 import moment from 'moment'
-import { Buffer, BN } from '@c4tplatform/caminojs'
+import { Buffer, BN } from '@c4tplatform/caminojs/dist'
 import HDKey from 'hdkey'
 import { ava, bintools } from '@/AVA'
 const bippath = require('bip32-path')

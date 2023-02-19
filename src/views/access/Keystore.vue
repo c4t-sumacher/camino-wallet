@@ -98,7 +98,7 @@ export default class Keystore extends Vue {
         setTimeout(() => {
             this.$store
                 .dispatch('importKeyfile', data)
-                .then((res) => {
+                .then((/*res*/) => {
                     parent.isLoading = false
 
                     // if(rememberPass){

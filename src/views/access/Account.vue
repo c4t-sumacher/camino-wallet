@@ -30,7 +30,6 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { ImportKeyfileInput, iUserAccountEncrypted } from '@/store/types'
 import Identicon from '@/components/misc/Identicon.vue'
 
 @Component({
@@ -66,10 +65,6 @@ export default class Account extends Vue {
         let parent = this
         this.error = ''
         this.isLoading = true
-        let data: ImportKeyfileInput = {
-            password: this.password,
-            data: account.wallet,
-        }
 
         setTimeout(() => {
             this.$store
@@ -77,7 +72,7 @@ export default class Account extends Vue {
                     index: this.index,
                     pass: this.password,
                 })
-                .then((res) => {
+                .then((/*res*/) => {
                     parent.isLoading = false
                 })
                 .catch((err) => {

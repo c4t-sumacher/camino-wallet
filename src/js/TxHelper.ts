@@ -1,6 +1,6 @@
 import { ava, bintools } from '@/AVA'
 import { ITransaction } from '@/components/wallet/transfer/types'
-import { BN, Buffer } from '@c4tplatform/caminojs'
+import { BN, Buffer } from '@c4tplatform/caminojs/dist'
 import {
     AssetAmountDestination,
     BaseTx,

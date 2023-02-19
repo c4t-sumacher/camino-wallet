@@ -81,19 +81,17 @@
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 import {
     ITransactionData,
     ITransactionDataProcessed,
     TransactionType,
 } from '@/store/modules/history/types'
-import moment from 'moment'
 
 import TxRow from '@/components/wallet/activity/TxRow.vue'
 import RadioButtons from '@/components/misc/RadioButtons.vue'
 import Spinner from '@/components/misc/Spinner.vue'
 
-type FilterModeType = 'all' | 'transfer' | 'export_import' | 'stake'
 type ModeKeyType = 'all' | 'transfer' | 'swap' | 'stake'
 
 //@ts-ignore

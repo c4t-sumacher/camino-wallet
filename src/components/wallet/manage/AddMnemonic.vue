@@ -64,7 +64,7 @@ export default class AddMnemonic extends Vue {
                 await this.$store.dispatch('addWalletMnemonic', phrase)
                 this.isLoading = false
                 this.handleImportSuccess()
-            } catch (e) {
+            } catch (e: any) {
                 this.isLoading = false
                 if (e.message.includes('already')) {
                     this.err = this.$t('keys.import_mnemonic_duplicate_err') as string

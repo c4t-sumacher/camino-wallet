@@ -3,7 +3,7 @@ import { ITransaction } from '@/components/wallet/transfer/types'
 import { digestMessage } from '@/helpers/helper'
 import { WalletNameType } from '@/js/wallets/types'
 
-import { Buffer as BufferAvalanche, BN } from '@c4tplatform/caminojs'
+import { Buffer as BufferAvalanche, BN } from '@c4tplatform/caminojs/dist'
 import {
     KeyPair as AVMKeyPair,
     KeyChain as AVMKeyChain,

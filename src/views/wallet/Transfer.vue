@@ -132,7 +132,7 @@
 </template>
 <script lang="ts">
 import 'reflect-metadata'
-import { Vue, Component, Ref } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 
 import TxList from '@/components/wallet/transfer/TxList.vue'
 import Big from 'big.js'
@@ -145,7 +145,7 @@ import { ava, isValidAddress } from '../../AVA'
 import FaucetLink from '@/components/misc/FaucetLink.vue'
 import { ITransaction } from '@/components/wallet/transfer/types'
 import { UTXO } from '@c4tplatform/caminojs/dist/apis/avm'
-import { Buffer, BN } from '@c4tplatform/caminojs'
+import { Buffer, BN } from '@c4tplatform/caminojs/dist'
 import TxSummary from '@/components/wallet/transfer/TxSummary.vue'
 import { priceDict, IssueBatchTxInput } from '@/store/types'
 import { WalletType } from '@/js/wallets/types'
@@ -297,9 +297,10 @@ export default class Transfer extends Vue {
         }
     }
 
-    async onsuccess(txId: string) {
+    async onsuccess(tx: string) {
         this.isAjax = false
         this.isSuccess = true
+        this.txId = tx
 
         this.$store.dispatch('Notifications/add', {
             title: this.$t('transfer.success_title'),

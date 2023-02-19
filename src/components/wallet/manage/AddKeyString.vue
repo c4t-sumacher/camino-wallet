@@ -57,7 +57,7 @@ export default class AddKeyString extends Vue {
                 // @ts-ignore
                 this.$emit('success')
                 this.clear()
-            } catch (e) {
+            } catch (e: any) {
                 this.isLoading = false
 
                 if (e.message.includes('already')) {
