@@ -1,8 +1,8 @@
 <template>
     <div class="tx_history_row">
         <div>
-            <p class="time">
-                {{ timeText }}
+            <div class="time">
+                <p>{{ timeText }}</p>
                 <v-btn
                     icon
                     v-if="explorerUrl?.includes('https://')"
@@ -13,7 +13,7 @@
                 <v-btn icon v-else-if="explorerUrl" @click="navigate(explorerUrl)">
                     <v-icon>mdi-magnify</v-icon>
                 </v-btn>
-            </p>
+            </div>
             <div v-if="memo" class="memo">
                 <p>Memo</p>
                 <p>{{ memo }}</p>
@@ -138,7 +138,12 @@ export default class TxHistoryRow extends Vue {
 }
 
 .time {
-    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    p {
+        font-size: 15px;
+    }
 
     .v-btn {
         float: right;
